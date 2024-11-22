@@ -10,7 +10,7 @@ import (
 
 var redisClient *redis.Client
 
-func InitRedis(cfg *config.Config) {
+func InitRedis(cfg *config.Config) error {
 	redisClient = redis.NewClient(&redis.Options{
 		Addr:               cfg.Redis.Host + ":" + cfg.Redis.Port,
 		Password:           cfg.Redis.Password,
@@ -27,6 +27,7 @@ func InitRedis(cfg *config.Config) {
 	if _, err := redisClient.Ping().Result(); err != nil {
 		log.Fatalf("Failed to connect to Redis: %v", err)
 	}
+	return nil
 }
 
 func GetRedis() *redis.Client {
