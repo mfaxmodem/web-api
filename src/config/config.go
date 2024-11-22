@@ -3,14 +3,16 @@ package config
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	Server   ServerConfig
-	Postgres PostgresConfig
-	Redis    RedisConfig
+	Server         ServerConfig
+	Postgres       PostgresConfig
+	Redis          RedisConfig
+	PasswordConfig PasswordConfig
 }
 
 type ServerConfig struct {
@@ -32,9 +34,20 @@ type RedisConfig struct {
 	Port               string
 	Password           string
 	DB                 string
-	MinIdleConnections int
+	DialTimeout        time.Duration
+	ReadTimeout        time.Duration
+	WriteTimeout       time.Duration
+	IdleCheckFrequency time.Duration
 	PoolSize           int
-	PoolTimeout        int
+	PoolTimeout        time.Duration
+}
+type PasswordConfig struct {
+	IncludeChars     bool
+	IncludeDigits    bool
+	MinLength        int
+	MaxLength        int
+	IncludeUppercase bool
+	IncludeLowercase bool
 }
 
 func GetConfig() (*Config, error) {
