@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/mfaxmodem/web-api/config"
+	"github.com/mfaxmodem/web-api/src/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

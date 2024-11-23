@@ -1,7 +1,7 @@
 package helper
 
 import (
-	validation "github.com/mfaxmodem/web-api/api/validations"
+	validation "github.com/mfaxmodem/web-api/src/api/validations"
 )
 
 type BaseHttpResponse struct {
@@ -17,7 +17,10 @@ func GenerateBaseResponse(result any, success bool, resultCode int) *BaseHttpRes
 }
 
 func GenerateBaseResponseError(result any, success bool, resultCode int, err error) *BaseHttpResponse {
-	return &BaseHttpResponse{Result: result, ResultCode: resultCode, Success: success, Error: err.Error()}
+	return &BaseHttpResponse{Result: result,
+		ResultCode: resultCode,
+		Success:    success,
+		Error:      err.Error()}
 }
 
 func GenerateBaseResponseWithValidationError(result any, success bool, resultCode int, err error) *BaseHttpResponse {

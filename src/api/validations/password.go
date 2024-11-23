@@ -2,7 +2,7 @@ package validations
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/mfaxmodem/web-api/common"
+	"github.com/mfaxmodem/web-api/src/common"
 )
 
 func PasswordValidator(fld validator.FieldLevel) bool {

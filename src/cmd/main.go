@@ -3,12 +3,16 @@ package main
 import (
 	"log"
 
-	"github.com/mfaxmodem/web-api/api"
-	"github.com/mfaxmodem/web-api/config"
-	"github.com/mfaxmodem/web-api/data/cache"
-	"github.com/mfaxmodem/web-api/data/db"
+	_ "github.com/mfaxmodem/web-api/docs"
+	"github.com/mfaxmodem/web-api/src/api"
+	"github.com/mfaxmodem/web-api/src/config"
+	"github.com/mfaxmodem/web-api/src/data/cache"
+	"github.com/mfaxmodem/web-api/src/data/db"
 )
 
+// @securityDefinitions.apikey AuthBearer
+// @in header
+// @name Authorization
 func main() {
 	// Load configuration from config file or environment variables.
 	cfg, err := config.GetConfig()
@@ -18,7 +22,7 @@ func main() {
 
 	// Redis Connection
 	cache.InitRedis(cfg)
-	if err := db.InitDb(cfg); err != nil {
+	if err := cache.InitRedis(cfg); err != nil {
 		log.Fatalf("failed to initialize Redis %v", err)
 	}
 	defer cache.CloseRedis()
@@ -30,5 +34,5 @@ func main() {
 	defer db.CloseDb()
 
 	// API Connection
-	api.InitServer()
+	api.InitServer(cfg)
 }

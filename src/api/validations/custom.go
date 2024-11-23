@@ -28,7 +28,7 @@ func GetValidationError(err error) *[]ValidationError {
 				Property: e.Field(),
 				Tag:      e.Tag(),
 				Value:    e.Param(),
-				Message:  fmt.Sprintf("Invalid value for %s: %s", e.Field(), e.Tag()),
+				Message:  fmt.Sprintf("The field '%s' failed validation with tag '%s' and value '%s'.", e.Field(), e.Tag(), e.Param()),
 			})
 		}
 		return &validationErrors

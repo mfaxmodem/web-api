@@ -5,7 +5,7 @@ import (
 
 	"github.com/didip/tollbooth/v8"
 	"github.com/gin-gonic/gin"
-	"github.com/mfaxmodem/web-api/api/helper"
+	"github.com/mfaxmodem/web-api/src/api/helper"
 )
 
 func LimitByRequest() gin.HandlerFunc {

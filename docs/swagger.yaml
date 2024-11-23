@@ -1,0 +1,55 @@
+definitions:
+  github_com_mfaxmodem_web-api_src_api_helper.BaseHttpResponse:
+    properties:
+      error: {}
+      result: {}
+      resultCode:
+        type: integer
+      success:
+        type: boolean
+      validationErrors:
+        items:
+          $ref: '#/definitions/github_com_mfaxmodem_web-api_src_api_validations.ValidationError'
+        type: array
+    type: object
+  github_com_mfaxmodem_web-api_src_api_validations.ValidationError:
+    properties:
+      message:
+        type: string
+      property:
+        type: string
+      tag:
+        type: string
+      value:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /v1/health/:
+    get:
+      consumes:
+      - application/json
+      description: Health Check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_mfaxmodem_web-api_src_api_helper.BaseHttpResponse'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_mfaxmodem_web-api_src_api_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Health Check
+      tags:
+      - health
+securityDefinitions:
+  AuthBearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v7"
-	"github.com/mfaxmodem/web-api/config"
+	"github.com/mfaxmodem/web-api/src/config"
 )
 
 var redisClient *redis.Client

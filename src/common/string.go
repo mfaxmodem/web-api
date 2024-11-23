@@ -6,7 +6,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/mfaxmodem/web-api/config"
+	"github.com/mfaxmodem/web-api/src/config"
 	"golang.org/x/exp/rand"
 )
 

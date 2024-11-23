@@ -1,0 +1,10 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "swag",
+            "command": "swag init -g src/cmd/main.go -o docs --parseDependency --parseInternal",
+            "type": "shell",
+        }
+    ]
+}
