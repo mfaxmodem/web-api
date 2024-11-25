@@ -13,7 +13,7 @@ postgres:
   host: postgres_container
   port : 5432
   user: postgres
-  password: admin@123
+  password: Password12!
   dbName: car_sale_db
   sslMode: disable
   maxIdleConns: 15
