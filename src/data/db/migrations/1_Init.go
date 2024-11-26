@@ -1,32 +1,28 @@
-package migrations
+package migration
 
 import (
 	"github.com/mfaxmodem/web-api/src/config"
-	"github.com/mfaxmodem/web-api/src/constants"
 	"github.com/mfaxmodem/web-api/src/data/db"
 	"github.com/mfaxmodem/web-api/src/data/models"
 	"github.com/mfaxmodem/web-api/src/pkg/logging"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
-func Up_1() {
-	// Get configuration
-	cfg, err := config.GetConfig()
-	var logger = logging.NewLogger(cfg)
-	if err != nil {
-		panic("Failed to get config: " + err.Error())
-	}
+cfg, err := config.GetConfig()
 
-	// Get database connection
+var logger = logging.NewLogger(cfg)
+
+func Up1() {
 	database := db.GetDb()
 
-	// Create tables
-	createTables(database, logger)
-	createDefaultInformation(database)
+	createTables(database)
+	createDefaultUserInformation(database)
+
 }
 
-func createTables(database *gorm.DB, logger logging.Logger) {
+func createTables(database *gorm.DB) {
 	tables := []interface{}{}
 	// User
 	tables = addNewTable(database, models.User{}, tables)
@@ -47,22 +43,25 @@ func addNewTable(database *gorm.DB, model interface{}, tables []interface{}) []i
 	return tables
 }
 
-func createDefaultInformation(database *gorm.DB) {
-	adminRole := models.Role{Name: constants.AdminRoleName}
-	createRoleNotExists(database, &adminRole)
+func createDefaultUserInformation(database *gorm.DB) {
 
-	defaultRole := models.Role{Name: constants.DefaultRoleName}
-	createRoleNotExists(database, &defaultRole)
+	adminRole := models.Role{Name: "admin"}
+	createRoleIfNotExists(database, &adminRole)
 
-	user := models.User{Username: constants.DefaultUserName, FirstName: "Test", LastName: "Test",
+	defaultRole := models.Role{Name: "default"}
+	createRoleIfNotExists(database, &defaultRole)
+
+	u := models.User{Username: "admin", FirstName: "Test", LastName: "Test",
 		MobileNumber: "09111112222", Email: "admin@admin.com"}
 	pass := "12345678"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
-	user.Password = string(hashedPassword)
-	createAdminUserIfNotExists(database, &user, adminRole.Id)
+	u.Password = string(hashedPassword)
+
+	createAdminUserIfNotExists(database, &u, adminRole.Id)
+
 }
 
-func createRoleNotExists(database *gorm.DB, r *models.Role) {
+func createRoleIfNotExists(database *gorm.DB, r *models.Role) {
 	exists := 0
 	database.
 		Model(&models.Role{}).
@@ -72,20 +71,22 @@ func createRoleNotExists(database *gorm.DB, r *models.Role) {
 	if exists == 0 {
 		database.Create(r)
 	}
-
 }
 
-func createAdminUserIfNotExists(database *gorm.DB, user *models.User, roleId int) {
+func createAdminUserIfNotExists(database *gorm.DB, u *models.User, roleId int) {
 	exists := 0
 	database.
 		Model(&models.User{}).
 		Select("1").
-		Where("Username = ?", user.Username).
+		Where("username = ?", u.Username).
 		First(&exists)
 	if exists == 0 {
-		database.Create(user)
-		user := models.UserRole{UserId: user.Id, RoleId: roleId}
-		database.Create(&user)
+		database.Create(u)
+		ur := models.UserRole{UserId: u.Id, RoleId: roleId}
+		database.Create(&ur)
 	}
+}
 
+func Down1() {
+	// nothing
 }

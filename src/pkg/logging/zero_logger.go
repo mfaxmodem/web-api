@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/mfaxmodem/web-api/src/config"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/pkgerrors"
 )

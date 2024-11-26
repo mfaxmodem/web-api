@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/mfaxmodem/web-api/src/config"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"

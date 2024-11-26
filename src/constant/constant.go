@@ -1,4 +1,4 @@
-package constants
+package constant
 
 const AdminRoleName string = "admin"
 const DefaultRoleName string = "default"
