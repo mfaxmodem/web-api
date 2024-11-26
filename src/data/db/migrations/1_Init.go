@@ -10,10 +10,18 @@ import (
 	"gorm.io/gorm"
 )
 
-cfg, err := config.GetConfig()
+var logger = initializeLogger()
 
-var logger = logging.NewLogger(cfg)
-
+func pointerToString(s string) *string {
+	return &s
+}
+func initializeLogger() logging.Logger {
+	cfg, err := config.GetConfig()
+	if err != nil {
+		panic("failed to load configuration: " + err.Error()) // مدیریت خطای کانفیگ
+	}
+	return logging.NewLogger(cfg) // فقط مقدار config به NewLogger ارسال می‌شود
+}
 func Up1() {
 	database := db.GetDb()
 
@@ -23,24 +31,22 @@ func Up1() {
 }
 
 func createTables(database *gorm.DB) {
-	tables := []interface{}{}
-	// User
-	tables = addNewTable(database, models.User{}, tables)
-	tables = addNewTable(database, models.Role{}, tables)
-	tables = addNewTable(database, models.UserRole{}, tables)
-
-	err := database.Migrator().CreateTable(tables...)
-	if err != nil {
-		logger.Error(logging.Postgres, logging.Migration, err.Error(), nil)
+	tables := []interface{}{
+		models.User{},
+		models.Role{},
+		models.UserRole{},
 	}
+
+	for _, table := range tables {
+		if !database.Migrator().HasTable(table) {
+			if err := database.Migrator().CreateTable(table); err != nil {
+				logger.Error(logging.Postgres, logging.Migration, err.Error(), nil)
+				return // اگر خطا وجود دارد، ادامه ندهید
+			}
+		}
+	}
+
 	logger.Info(logging.Postgres, logging.Migration, "tables created", nil)
-}
-
-func addNewTable(database *gorm.DB, model interface{}, tables []interface{}) []interface{} {
-	if !database.Migrator().HasTable(model) {
-		tables = append(tables, model)
-	}
-	return tables
 }
 
 func createDefaultUserInformation(database *gorm.DB) {
@@ -51,8 +57,13 @@ func createDefaultUserInformation(database *gorm.DB) {
 	defaultRole := models.Role{Name: "default"}
 	createRoleIfNotExists(database, &defaultRole)
 
-	u := models.User{Username: "admin", FirstName: "Test", LastName: "Test",
-		MobileNumber: "09111112222", Email: "admin@admin.com"}
+	u := models.User{
+		Username:     "admin",
+		FirstName:    pointerToString("Test"),            // استفاده از اشاره‌گر
+		LastName:     pointerToString("Test"),            // استفاده از اشاره‌گر
+		MobileNumber: pointerToString("09120000000"),     // استفاده از اشاره‌گر
+		Email:        pointerToString("admin@admin.com"), // استفاده از اشاره‌گر
+	}
 	pass := "12345678"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 	u.Password = string(hashedPassword)
